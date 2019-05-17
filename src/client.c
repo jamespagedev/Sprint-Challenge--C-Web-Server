@@ -158,6 +158,10 @@ int main(int argc, char *argv[])
     from the server up to a maximum specified byte length on each iteration. We'll just continue doing this in a loop
     until `recv` returns back no more data from the server:
   */
+  while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0) {
+    // print the data we got back to stdout
+    // ???????????????
+  }
   // 5. Clean up any allocated memory and open file descriptors.
   /*
   Don't forget to free any allocated memory and close any open file descriptors.
