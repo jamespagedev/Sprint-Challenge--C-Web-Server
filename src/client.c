@@ -133,6 +133,8 @@ int main(int argc, char *argv[])
   printf("urlinfo->path = %s\n", urlinfo->path);
   printf("url = %s\n\n", url); // ensure the original url string is still in tact and not modified
   // 2. Initialize a socket by calling the `get_socket` function from lib.c
+  // utilize sockfd initialized for you above
+  sockfd = get_socket(urlinfo->hostname, urlinfo->port);
   // 3. Call `send_request` to construct the request and send it
   // 4. Call `recv` in a loop until there is no more data to receive from the server. Print the received response to stdout.
   /*
