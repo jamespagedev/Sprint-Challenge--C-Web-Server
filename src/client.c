@@ -63,11 +63,26 @@ urlinfo_t *parse_url(char *url)
   // 3. Overwrite the slash with a '\0' so that we are no longer considering anything after the slash.
   *(path - 1) = '\0';
   // 4. Use strchr to find the first colon in the URL.
-  port = strchr(hostname, ':');
-  // 5. Set the port pointer to 1 character after the spot returned by strchr.
-  port++;
-  // 6. Overwrite the colon with a '\0' so that we are just left with the hostname.
-  *(port - 1) = '\0';
+  // (Stretch 1.2) If the url does not contain a port#... add ":80" before the first slash
+  if(strstr(hostname, ":"))
+  {
+    port = strchr(hostname, ':');
+    // 5. Set the port pointer to 1 character after the spot returned by strchr.
+    port++;
+    // 6. Overwrite the colon with a '\0' so that we are just left with the hostname.
+    *(port - 1) = '\0';
+  }
+  else
+  {
+    if(strstr(hostname, "localhost"))
+    {
+      port = "3490";
+    }
+    else
+    {
+      port = "80";
+    }
+  }
 
   ///////////////////
   // IMPLEMENT ME! //
