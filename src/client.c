@@ -32,8 +32,6 @@ urlinfo_t *parse_url(char *url)
   char *port;
   char *path;
 
-  printf("hostname_before = %s\n", hostname);
-
   urlinfo_t *urlinfo = malloc(sizeof(urlinfo_t));
 
   // We can parse the input URL by doing the following:
@@ -44,22 +42,16 @@ urlinfo_t *parse_url(char *url)
   */
   // 1. Use strchr to find the first slash in the URL (this is assuming there is no http:// or https:// in the URL).
   path = strchr(hostname, '/');
-  printf("path1 = %s\n", path);
   // 2. Set the path pointer to 1 character after the spot returned by strchr.
   path++;
-  printf("path2 = %s\n", path);
   // 3. Overwrite the slash with a '\0' so that we are no longer considering anything after the slash.
   *(path - 1) = '\0';
-  printf("hostname_after_path_removal = %s\n", hostname);
   // 4. Use strchr to find the first colon in the URL.
   port = strchr(hostname, ':');
-  printf("port1 = %s\n", port);
   // 5. Set the port pointer to 1 character after the spot returned by strchr.
   port++;
-  printf("port2 = %s\n", port);
   // 6. Overwrite the colon with a '\0' so that we are just left with the hostname.
   *(port - 1) = '\0';
-  printf("hostname_after_port_removal = %s\n\n", hostname);
 
   ///////////////////
   // IMPLEMENT ME! //
@@ -141,10 +133,6 @@ int main(int argc, char *argv[])
     parse_url() function.
   */
   urlinfo_t *urlinfo = parse_url(url);
-  printf("urlinfo->hostname = %s\n", urlinfo->hostname);
-  printf("urlinfo->port = %s\n", urlinfo->port);
-  printf("urlinfo->path = %s\n", urlinfo->path);
-  printf("url = %s\n\n", url); // ensure the original url string is still in tact and not modified
   // 2. Initialize a socket by calling the `get_socket` function from lib.c
   // utilize sockfd initialized for you above
   sockfd = get_socket(urlinfo->hostname, urlinfo->port);
