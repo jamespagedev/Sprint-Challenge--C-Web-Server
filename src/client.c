@@ -28,9 +28,25 @@ typedef struct urlinfo_t {
 urlinfo_t *parse_url(char *url)
 {
   // copy the input URL so as not to mutate the original
-  char *hostname = strdup(url);
+  char *hostname;
   char *port;
   char *path;
+
+  // (Stretch 1.1) remove unwanted "http://" or "https://... if it is in url
+  const char *http = "http://";
+  const char *https = "https://";
+  if(strstr(url, http))
+  {
+    hostname = strdup(url + 7);
+  }
+  else if(strstr(url, https))
+  {
+    hostname = strdup(url + 8);
+  }
+  else
+  {
+    hostname = strdup(url);
+  }
 
   urlinfo_t *urlinfo = malloc(sizeof(urlinfo_t));
 
