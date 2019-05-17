@@ -85,7 +85,6 @@ int send_request(int fd, char *hostname, char *port, char *path)
 {
   const int max_request_size = 16384;
   char request[max_request_size];
-  int rv;
 
   ///////////////////
   // IMPLEMENT ME! //
@@ -101,13 +100,27 @@ int send_request(int fd, char *hostname, char *port, char *path)
   The connection should be closed, otherwise some servers will simply hang and not return a response,
   since they're expecting more data from our client.
   */
-
+  int request_length = sprintf(request,
+          "GET /%s HTTP/1.1\n"    // /path
+          "Host: %s:%s\n"         // hostname:port
+          "Connection: close\n"   // close or keep-alive
+          "\n",                   // closes the header in the response
+          path,
+          hostname,
+          port
+          );
 
   // Send the request string down the socket.
   //    Hopefully that's pretty self-explanatory.
+  int rv = send(fd, request, request_length, 0);
 
+  if (rv < 0)
+  {
+    perror("send");
+    exit(1);
+  }
 
-  return 0;
+  return rv;
 }
 
 int main(int argc, char *argv[])
@@ -136,6 +149,7 @@ int main(int argc, char *argv[])
   // utilize sockfd initialized for you above
   sockfd = get_socket(urlinfo->hostname, urlinfo->port);
   // 3. Call `send_request` to construct the request and send it
+  send_request(sockfd, urlinfo->hostname, urlinfo->port, urlinfo->path);
   // 4. Call `recv` in a loop until there is no more data to receive from the server. Print the received response to stdout.
   /*
     Receive the response from the server and print it to stdout.
@@ -156,6 +170,9 @@ int main(int argc, char *argv[])
   urlinfo->hostname = NULL;
   free(urlinfo);
   urlinfo = NULL;
+
+  close(sockfd);
+  sockfd = 0;
 
   ///////////////////
   // IMPLEMENT ME! //
