@@ -157,10 +157,13 @@ int main(int argc, char *argv[])
     a response we're going to get back. So to overcome this, we'll just keep calling `recv`, which will return back data
     from the server up to a maximum specified byte length on each iteration. We'll just continue doing this in a loop
     until `recv` returns back no more data from the server:
+    https://pubs.opengroup.org/onlinepubs/009695399/functions/recv.html
+    https://stackoverflow.com/questions/30667176/string-used-in-recv-does-not-printf-as-it-should
+    https://stackoverflow.com/questions/3074824/reading-buffer-from-socket
   */
   while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0) {
     // print the data we got back to stdout
-    // ???????????????
+    printf("%s\n", buf);
   }
   // 5. Clean up any allocated memory and open file descriptors.
   /*
