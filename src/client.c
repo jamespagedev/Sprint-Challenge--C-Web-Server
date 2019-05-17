@@ -32,6 +32,8 @@ urlinfo_t *parse_url(char *url)
   char *port;
   char *path;
 
+  printf("hostname_before = %s\n", hostname);
+
   urlinfo_t *urlinfo = malloc(sizeof(urlinfo_t));
 
   // We can parse the input URL by doing the following:
@@ -41,15 +43,30 @@ urlinfo_t *parse_url(char *url)
   You can also use the `strstr` function to look for specific substrings in a string.
   */
   // 1. Use strchr to find the first slash in the URL (this is assuming there is no http:// or https:// in the URL).
+  path = strchr(hostname, '/');
+  printf("path1 = %s\n", path);
   // 2. Set the path pointer to 1 character after the spot returned by strchr.
+  path++;
+  printf("path2 = %s\n", path);
   // 3. Overwrite the slash with a '\0' so that we are no longer considering anything after the slash.
+  *(path - 1) = '\0';
+  printf("hostname_after_path_removal = %s\n", hostname);
   // 4. Use strchr to find the first colon in the URL.
+  port = strchr(hostname, ':');
+  printf("port1 = %s\n", port);
   // 5. Set the port pointer to 1 character after the spot returned by strchr.
+  port++;
+  printf("port2 = %s\n", port);
   // 6. Overwrite the colon with a '\0' so that we are just left with the hostname.
+  *(port - 1) = '\0';
+  printf("hostname_after_port_removal = %s\n\n", hostname);
 
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
+  urlinfo->hostname = hostname;
+  urlinfo->port = port;
+  urlinfo->path = path;
 
   return urlinfo;
 }
@@ -102,6 +119,7 @@ int main(int argc, char *argv[])
     fprintf(stderr,"usage: client HOSTNAME:PORT/PATH\n");
     exit(1);
   }
+  char *url = argv[1];
 
   // 1. Parse the input URL
   /*
@@ -109,20 +127,33 @@ int main(int argc, char *argv[])
     path strings. Assign each of these to the appropriate field in the urlinfo_t struct and return it from the
     parse_url() function.
   */
+  urlinfo_t *urlinfo = parse_url(url);
+  printf("urlinfo->hostname = %s\n", urlinfo->hostname);
+  printf("urlinfo->port = %s\n", urlinfo->port);
+  printf("urlinfo->path = %s\n", urlinfo->path);
+  printf("url = %s\n\n", url); // ensure the original url string is still in tact and not modified
   // 2. Initialize a socket by calling the `get_socket` function from lib.c
   // 3. Call `send_request` to construct the request and send it
   // 4. Call `recv` in a loop until there is no more data to receive from the server. Print the received response to stdout.
   /*
-  Receive the response from the server and print it to stdout.
-      The main hurdle that needs to be overcome when receiving data from a server is that we have no idea how large of
-      a response we're going to get back. So to overcome this, we'll just keep calling `recv`, which will return back data
-      from the server up to a maximum specified byte length on each iteration. We'll just continue doing this in a loop
-      until `recv` returns back no more data from the server:
+    Receive the response from the server and print it to stdout.
+    The main hurdle that needs to be overcome when receiving data from a server is that we have no idea how large of
+    a response we're going to get back. So to overcome this, we'll just keep calling `recv`, which will return back data
+    from the server up to a maximum specified byte length on each iteration. We'll just continue doing this in a loop
+    until `recv` returns back no more data from the server:
   */
   // 5. Clean up any allocated memory and open file descriptors.
   /*
   Don't forget to free any allocated memory and close any open file descriptors.
   */
+  free(urlinfo->path);
+  urlinfo->path = NULL;
+  free(urlinfo->port);
+  urlinfo->port = NULL;
+  free(urlinfo->hostname);
+  urlinfo->hostname = NULL;
+  free(urlinfo);
+  urlinfo = NULL;
 
   ///////////////////
   // IMPLEMENT ME! //
